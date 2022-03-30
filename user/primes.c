@@ -26,6 +26,7 @@ generate_natual() {
         exit(0);
     }
 }
+
 int
 prime_handle(int in_fd, int prime) {
     //to guolv prime number
