@@ -24,12 +24,13 @@ main(int argc, char *argv[])
         read(fd[0], buf, 10);
         curPid = getpid();
         printf("%d: received%s\n", curPid, buf);
-        write(fd[1], "pong", 4);
+        write(fd[1], "pong", BUFSIZE);
         exit(0);
     }else  { //parent
-        write(fd[1], "ping", 4);
-        wait(NULL);
-        read(fd[0], buf, 4);
+        write(fd[1], "ping", BUFSIZE);
+        //wait(NULL);
+        wait((int *)0);
+        read(fd[0], buf, BUFSIZE);
         curPid = getpid();
         printf("%d: received %s\n", curPid, buf);
     }
