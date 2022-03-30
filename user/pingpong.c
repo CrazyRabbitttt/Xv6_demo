@@ -20,7 +20,7 @@ int main()
         close(fd[0]);
         printf("%d: received %s\n", getpid(), buf);
         write(fd[1], "pong", 4);
-        close(pd[1]);
+        close(fd[1]);
         exit(0);
     }else {
         write(fd[1], "ping", 4);
