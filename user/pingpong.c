@@ -20,19 +20,19 @@ main(int argc, char *argv[])
     //first : the child process receive the message from parent,
     //then  : the parent received the message from son
     pid = fork();
-    if (pid == 0) {      //child
-        read(fd[0], buf, 10);
-        curPid = getpid();
-        printf("%d: received%s\n", curPid, buf);
-        write(fd[1], "pong", BUFSIZE);
-        exit(0);
-    }else  { //parent
+    if (pid > 0) {
         write(fd[1], "ping", BUFSIZE);
         //wait(NULL);
         wait((int *)0);
         read(fd[0], buf, BUFSIZE);
         curPid = getpid();
         printf("%d: received %s\n", curPid, buf);
+    }else {
+        read(fd[0], buf, 10);
+        curPid = getpid();
+        printf("%d: received %s\n", curPid, buf);
+        write(fd[1], "pong", BUFSIZE);
+        exit(0);
     }
     exit(0);
 }
