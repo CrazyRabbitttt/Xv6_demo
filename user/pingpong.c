@@ -6,15 +6,17 @@
 #include "kernel/stat.h"
 #include "user/user.h"
 
+#define BUFSIZE 16
+
 int
 main(int argc, char *argv[])
 {
     int fd[2];
-    pid_t pid, curPid;
+    int pid, curPid;
     //make a pipe
     pipe(fd);                   //pass value fd[0]  fd[1], represent the receive and send
 
-    char buf[10];
+    char buf[BUFSIZE];
     //first : the child process receive the message from parent,
     //then  : the parent received the message from son
     pid = fork();
@@ -26,7 +28,7 @@ main(int argc, char *argv[])
         exit(0);
     }else  { //parent
         write(fd[1], "ping", 4);
-        waitpid(pid);
+        wait(NULL);
         read(fd[0], buf, 4);
         curPid = getpid();
         printf("%d: received %s\n", curPid, buf);
