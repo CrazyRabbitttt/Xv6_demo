@@ -2,6 +2,7 @@
 // Created by SGX on 2022/3/30.
 //
 
+//passed by int
 #include "kernel/types.h"
 #include "kernel/stat.h"
 #include "user/user.h"
