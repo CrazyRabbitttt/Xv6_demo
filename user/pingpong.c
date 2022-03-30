@@ -34,5 +34,6 @@ main(int argc, char *argv[])
         curPid = getpid();
         printf("%d: received %s\n", curPid, buf);
     }
+    exit(0);
 }
 
