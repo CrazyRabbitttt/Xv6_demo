@@ -8,32 +8,29 @@
 
 #define BUFSIZE 16
 
-int
-main(int argc, char *argv[])
+int main()
 {
+    int pid;
     int fd[2];
-    int pid, curPid;
-    //make a pipe
-    pipe(fd);                   //pass value fd[0]  fd[1], represent the receive and send
-
+    pipe(fd);
     char buf[BUFSIZE];
-    //first : the child process receive the message from parent,
-    //then  : the parent received the message from son
     pid = fork();
-    if (pid > 0) {
-        write(fd[1], "ping", BUFSIZE);
-        //wait(NULL);
-        wait((int *)0);
-        read(fd[0], buf, BUFSIZE);
-        curPid = getpid();
-        printf("%d: received %s\n", curPid, buf);
+    if (pid == 0) {     /*child*/
+        read(fd[0], buf, 4);
+        close(fd[0]);
+        printf("%d: received %s\n", getpid(), buf);
+        write(fd[1], "pong", 4);
+        close(pd[1]);
+        exit(0);
     }else {
-        read(fd[0], buf, 10);
-        curPid = getpid();
-        printf("%d: received %s\n", curPid, buf);
-        write(fd[1], "pong", BUFSIZE);
+        write(fd[1], "ping", 4);
+        close(fd[1]);
+        wait(0);        //wait for child end...
+
+        read(fd[0], buf, 4);
+        printf("%d: received %s\n", getpid(), buf);
+        close(fd[0]);
         exit(0);
     }
-    exit(0);
 }
 
