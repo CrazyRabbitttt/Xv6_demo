@@ -10,7 +10,7 @@
 
 #define MESSAGE 16
 
-char
+
 int main(int argc, char * argv[]) {
     //从管道中获取的标准输入作为参数
     char buf[MESSAGE];
@@ -18,6 +18,6 @@ int main(int argc, char * argv[]) {
     printf("得到的标准化的输入： %s\n", buf);
     //那么argv[0] : 就是你命令行参数
     //需要执行命令，参数就是buf中保存的参数
-
+    exit(0);
 }
 
