@@ -8,12 +8,16 @@
 #include "kernel/fs.h"
 #include "kernel/fcntl.h"
 
-char *
-fmtname(char *path) {
+char*
+fmtname(char *path)
+{
     char *p;
-    while (p = path + strlen(path); *p != '/' && p >= path; p--)
+
+    // Find first character after last slash.
+    for(p=path+strlen(path); p >= path && *p != '/'; p--)
         ;
     p++;
+
     return p;
 }
 
