@@ -61,8 +61,10 @@ void find(char * path, char *target) {
         if (de.inum == 0)
             continue;
         memmove(p, de.name, DIRSIZ);
-        p[DIRSIZ] = 0;
+        p[DIRSIZ] = 0;          //add path: old + filename
 
+        if (!strcmp(de.name, ".") || !strcmp(de.name, ".."))
+            continue;
         //now the file's path blow the dir already add to 'path'
         find(buf, target);
     }
