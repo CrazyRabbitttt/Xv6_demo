@@ -29,6 +29,11 @@ void find(char * path, char *target) {
     struct dirent de;
     struct stat st;
 
+    if (!strcmp(fmtname(path), target)) {
+        printf("%s\n", path);           //if fmt is equal, print the old path
+        return ;
+    }
+
     if ((fd = open(path, O_RDONLY)) < 0) {
         fprintf(2, "find can open %s, the fd is %d", path, fd);
         exit(1);
@@ -39,10 +44,7 @@ void find(char * path, char *target) {
         close(fd);
         return;
     }
-    if (!strcmp(fmtname(path), target)) {
-        printf("%s\n", path);           //if fmt is equal, print the old path
-        return ;
-    }
+
 
     if (st.type == T_FILE) {
         close(fd);
