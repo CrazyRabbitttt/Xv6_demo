@@ -12,42 +12,34 @@
 
 
 int main(int argc, char * argv[]) {
-    //从管道中获取的标准输入作为参数
-    char buf[MESSAGE];
-    read(0, buf, MESSAGE);      //从标准输入中获得参数  -> buf
-//    printf("得到的标准化的输入： %s\n", buf);
-    //那么argv[0] : 就是你命令行参数
-    //需要执行命令，参数就是buf中保存的参数
+   //从管道中获得命令行参数（从标准输入读取）
+   char buf[MESSAGE];
+   write(0, buf, MESSAGE);
 
-    //  第一个参数就是需要执行的命令
-    char * xargv[MAXARG] ;
+   char *xargv[MAXARG];
+   int index = 0;
+   for (int i = 1; i < argc; i++) {
+       xargv[index] = argv[i];
+       index++;
+   }
 
-    int index = 0;
-    for (int i = 1; i < argc; i++) {
-        xargv[index] = argv[i];
-        index ++;
-    }
+   //通过回车行进行分隔
 
-    char *p = buf;
-    //对于按照\n进行分隔的参数作为命令行参数
-
-    for (int i = 0; i < MSSIZE; i++) {
-        if (buf[i] == '\n') {
-            if (!fork()) {  //child
-                buf[i] = 0;
-                xargv[index++] = p;
-                xargv[index] = 0;
-                excv(xargv[0], xargv);
-
-                exit(1);        //if child run this, means error
-            }else {     //parent
-                p = &buf[i  + 1];
-                wait(0);
-            }
-        }
-    }
-
-
-
+   char *p = buf;
+   for (int i = 0; i < MESSAGE; i++) {
+       if(buf[i] == '\n') {
+           if (!fork()) {
+               p = &buf[i + 1];
+               wait(0);
+           }else {
+               buf[i] = 0;
+               xargv[index++] = p;
+               xargv[index] = 0;
+               exec(xargv[0], xargv);
+               exit(1);
+           }
+       }
+   }
+    exit(0);
 }
 
