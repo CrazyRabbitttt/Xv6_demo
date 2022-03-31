@@ -60,6 +60,7 @@ void find(char *path, char *target)
         p[DIRSIZ] = 0;
 
         //path = oldpath + filename
+
         if (!strcmp(de.name, ".") || !strcmp(de.name, ".."))
             continue;
         find(buf, target);
