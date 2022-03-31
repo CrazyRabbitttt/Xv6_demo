@@ -53,6 +53,7 @@ void find(char * path, char *target) {
 
     if(strlen(path) + 1 + DIRSIZ + 1 > sizeof buf){
         printf("ls: path too long\n");
+        close(fd);
         return ;
     }
     strcpy(buf, path);
