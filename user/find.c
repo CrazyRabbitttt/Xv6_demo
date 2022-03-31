@@ -6,6 +6,7 @@
 #include "kernel/stat.h"
 #include "user/user.h"
 #include "kernel/fs.h"
+#include "kernel/fcntl.h"
 
 char*
 fmtname(char *path)
@@ -50,7 +51,7 @@ void find(char * path, char *target) {
 
     if(strlen(path) + 1 + DIRSIZ + 1 > sizeof buf){
         printf("ls: path too long\n");
-        break;
+        return ;
     }
     strcpy(buf, path);
     p = buf+strlen(buf);
@@ -63,7 +64,7 @@ void find(char * path, char *target) {
         p[DIRSIZ] = 0;
 
         //now the file's path blow the dir already add to 'path'
-        find(path, target);
+        find(buf, target);
     }
     close(fd);
 
@@ -73,7 +74,7 @@ int
 main(int argc, char *argv[])
 {
     if (argc < 3) {
-        fprintf("Usage : find <path> <filename>");
+        fprintf(2,"Usage : find <path> <filename>\n");
         exit(1);
     }
     find(argv[1], argv[2]);
