@@ -20,22 +20,34 @@ int main(int argc, char * argv[]) {
     //需要执行命令，参数就是buf中保存的参数
 
     //  第一个参数就是需要执行的命令
-    char * xargv[] ;
+    char * xargv[MAXARG] ;
 
-    char * command = argv[0];          //命令行参数
-    int index = 1;
-    for (index; index < argc; index++) {
-        xargs[index - 1] = argv[index];         //将参数加到xargv中去
-    }
-    //the end of index : argc
-    xargs[index] = buf;     //最后的应该就是从管道得到的参数
-
-    if (!fork()) {
-        excv(command, xargv);
-        exit(0);
+    int index = 0;
+    for (int i = 1; i < argc; i++) {
+        xargv[index] = argv[i];
+        index ++;
     }
 
-    wait();
-    exit(0);
+    char *p = buf;
+    //对于按照\n进行分隔的参数作为命令行参数
+
+    for (int i = 0; i < MSSIZE; i++) {
+        if (buf[i] == '\n') {
+            if (!fork()) {  //child
+                buf[i] = 0;
+                xargv[index++] = p;
+                xargv[index] = 0;
+                excv(xargv[0], xargv);
+
+                exit(1);        //if child run this, means error
+            }else {     //parent
+                p = &buf[i  + 1];
+                wait(0);
+            }
+        }
+    }
+
+
+
 }
 
