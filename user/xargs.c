@@ -6,7 +6,7 @@
 #include "user/user.h"
 #include "kernel/fs.h"
 #include "kernel/fcntl.h"
-#include "kernrl/param.h"       //MAXPATH 128
+#include "kernel/param.h"       //MAXPATH 128
 
 #define MESSAGE 16
 
