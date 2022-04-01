@@ -17,13 +17,6 @@ int main(int argc, char * argv[]) {
    char buf[MESSAGE];
    read(0, buf, MESSAGE);
 
-   printf("标准输入： %s\n", buf);
-   for (int i = 0; i < argc; i++) {
-       printf("argv[%d]:%s\n", i, argv[i]);
-   }
-
-   exit(0);
-   printf("Run the code....\n");
    char *xargv[MAXARG];
    int index = 0;
    for (int i = 1; i < argc; i++) {
@@ -50,7 +43,6 @@ int main(int argc, char * argv[]) {
    }
 
    wait(0);
-   printf("End...\n");
     exit(0);
 }
 
