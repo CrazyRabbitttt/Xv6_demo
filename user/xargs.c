@@ -9,7 +9,7 @@
 #include "kernel/param.h"       //MAXARG
 
 
-#define MESSAGE 16
+#define MESSAGE 26
 
 
 int main(int argc, char * argv[]) {
@@ -32,7 +32,7 @@ int main(int argc, char * argv[]) {
            if (!fork()) {
                buf[i] = 0;
                xargv[index++] = p;
-               xargv[index] = 0;
+               xargv[index++] = 0;
                exec(xargv[0], xargv);
                exit(1);
            }else {      //parent
