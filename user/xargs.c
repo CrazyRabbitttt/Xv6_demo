@@ -16,6 +16,7 @@ int main(int argc, char * argv[]) {
    char buf[MESSAGE];
    write(0, buf, MESSAGE);
 
+   printf("Run the code....\n");
    char *xargv[MAXARG];
    int index = 0;
    for (int i = 1; i < argc; i++) {
@@ -40,7 +41,9 @@ int main(int argc, char * argv[]) {
            }
        }
    }
+
    wait(0);
+   printf("End...\n");
     exit(0);
 }
 
