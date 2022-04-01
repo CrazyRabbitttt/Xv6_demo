@@ -34,7 +34,7 @@ int main(int argc, char * argv[]) {
                xargv[index++] = p;
                xargv[index++] = 0;
                exec(xargv[0], xargv);
-               exit(1);
+               exit(0);
            }else {      //parent
                p = &buf[i + 1];
                wait(0);
