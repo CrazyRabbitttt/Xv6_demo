@@ -30,14 +30,14 @@ int main(int argc, char * argv[]) {
    for (int i = 0; i < MESSAGE; i++) {
        if(buf[i] == '\n') {
            if (!fork()) {
-               p = &buf[i + 1];
-               wait(0);
-           }else {
                buf[i] = 0;
                xargv[index++] = p;
                xargv[index] = 0;
                exec(xargv[0], xargv);
                exit(1);
+           }else {      //parent
+               p = &buf[i + 1];
+               wait(0);
            }
        }
    }
