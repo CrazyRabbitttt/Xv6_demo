@@ -14,6 +14,7 @@
 
 int main(int argc, char * argv[]) {
    //从管道中获得命令行参数（从标准输入读取）
+   sleep(10);
    char buf[MESSAGE];
    read(0, buf, MESSAGE);
 
