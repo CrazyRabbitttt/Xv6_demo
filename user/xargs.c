@@ -6,7 +6,8 @@
 #include "user/user.h"
 #include "kernel/fs.h"
 #include "kernel/fcntl.h"
-#include "kernel/param.h"       //MAXPATH 128
+#include "kernel/param.h"       //MAXARG
+
 
 #define MESSAGE 16
 
@@ -16,6 +17,12 @@ int main(int argc, char * argv[]) {
    char buf[MESSAGE];
    write(0, buf, MESSAGE);
 
+   printf("标准输入： %s\n", buf);
+   for (int i = 0; i < argc; i++) {
+       printf("argv[%d]:%s\n", i, argv[i]);
+   }
+
+   exit(0);
    printf("Run the code....\n");
    char *xargv[MAXARG];
    int index = 0;
