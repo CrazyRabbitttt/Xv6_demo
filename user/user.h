@@ -24,6 +24,9 @@ char* sbrk(int);
 int sleep(int);
 int uptime(void);
 int trace(int);         //add the prototype of the trace
+struct sysinfo;
+int sysinfo(struct sysinfo *);      //add the proyotype of the sysinfo
+
 
 // ulib.c
 int stat(const char*, struct stat*);
