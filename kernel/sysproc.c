@@ -105,4 +105,11 @@ sys_trace(void)
     return 0;
 }
 
+uint64
+sys_sysinfo(void)
+{
+    printf("The sysinfo is running....\n");
+    return 0;
+}
+
 
