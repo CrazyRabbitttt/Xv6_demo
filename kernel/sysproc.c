@@ -98,8 +98,10 @@ sys_uptime(void)
 uint64
 sys_trace(void)
 {
-    printf("Hello, this is the sys_trace\n");
-
+    int n;
+    if(argint(0, &n) < 0)
+        return -1;
+    printf("Hello, this is the sys_trace, the number n : %d\n", n);
     return 0;
 }
 
