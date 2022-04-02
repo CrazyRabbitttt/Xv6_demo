@@ -116,8 +116,8 @@ sys_sysinfo(void)
 
     struct proc * p = myproc();
     struct sysinfo info;
-    info.freemem = -1;
-    info.nproc = -1;
+    info.freemem = freemem();
+    info.nproc = nproc();
     if(copyout(p->pagetable, addr, (char *)&info, sizeof(info)) < 0)
         return -1;
 
