@@ -114,7 +114,7 @@ sys_sysinfo(void)
         return -1;
                                         //将接收到的用户的结构体指针存放到addr
 
-//    struct proc * p = myproc();
+    struct proc * p = myproc();
     struct sysinfo info;
     info.freemem = -1;
     info.nproc = -1;
