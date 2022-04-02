@@ -98,11 +98,9 @@ sys_uptime(void)
 uint64
 sys_trace(void)
 {
-    int n;
-    if(argint(0, &n) < 0)
-        return -1;
-    printf("Hello, this is the sys_trace, the number n : %d\n", n);
-    return 0;
+
+    if (argint(0, &myproc() -> masknumber) < 0) return -1;          //将得到的arhument传给进程
+//    printf("Hello, this is the sys_trace, the number n : %d\n", n);
 }
 
 
