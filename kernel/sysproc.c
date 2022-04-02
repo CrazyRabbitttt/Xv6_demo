@@ -101,6 +101,7 @@ sys_trace(void)
 
     if (argint(0, &myproc() -> masknumber) < 0) return -1;          //将得到的arhument传给进程
 //    printf("Hello, this is the sys_trace, the number n : %d\n", n);
+    return 0;
 }
 
 
