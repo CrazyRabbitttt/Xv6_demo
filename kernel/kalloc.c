@@ -85,6 +85,7 @@ int
 freemem()
 {
     struct run *r;
+    int n = 0;
     acquire(&kmem.lock);
 
     for (r = kmem.freelist; r; r = r->next)
