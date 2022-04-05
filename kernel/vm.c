@@ -439,8 +439,8 @@ void vmprint(pagetable_t pagetable, int cur) {
       printf("page table %p\n", pagetable);
       if (cur > 3) return ;
       for (int i = 0; i < cur; i++) {
-          if (i) cout << " ";
-          cout << "..";
+          if (i) printf(" ");
+          printf("..");
       }
 
       for (int i = 0; i < 512; i++) {
@@ -448,7 +448,7 @@ void vmprint(pagetable_t pagetable, int cur) {
           if (pte & PTE_V) {
               uint64  child = PTE2PA(pte);
               printf("%d: pte %p pa [p]\n", i, child);
-              vmprint((pagetable_t)child), cur + 1;
+              vmprint((pagetable_t)child, cur + 1);
           }
       }
 
