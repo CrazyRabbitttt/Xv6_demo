@@ -434,15 +434,6 @@ copyinstr(pagetable_t pagetable, char *dst, uint64 srcva, uint64 max)
   }
 }
 
-if((pte & PTE_V) && (pte & (PTE_R|PTE_W|PTE_X)) == 0){
-// this PTE points to a lower-level page table.
-uint64 child = PTE2PA(pte);
-freewalk((pagetable_t)child);
-pagetable[i] = 0;
-} else if(pte & PTE_V){
-panic("freewalk: leaf");
-}
-
 void vmprint(pagetable_t pagetable, int cur) {
 //    printf("vmprint is calling...\n");
       printf("page table %p\n", pagetable);
