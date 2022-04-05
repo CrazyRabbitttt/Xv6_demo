@@ -445,7 +445,7 @@ void vmprint(pagetable_t pagetable, int cur) {
 //      printf("page table %p\n", pagetable
     if (cur > 2) return ;
     if (cur == 0) printf("page table %p\n", pagetable);     //物理地址
-    char *tmp = buf[i];
+    char *tmp = buf[cur];
     for (int i = 0; i < 512; i++) {
         pte_t  pte = pagetable[i];
         if (pte & PTE_V) {          //if is valid
