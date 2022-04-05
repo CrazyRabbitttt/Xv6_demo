@@ -434,25 +434,30 @@ copyinstr(pagetable_t pagetable, char *dst, uint64 srcva, uint64 max)
   }
 }
 
+
+void recur(pagetable_t pagetable, int cur) {
+    for (int i = 0; i < 512; i++) {
+        pte_t  pte = pagetable[i];
+
+        if (pte & PTE_V) {
+            for (int j = 0; j < cur; j++) {
+                if (!j) printf(" ");
+                printf("..");
+                printf("%d: pte %p pa %p\n", i, pte, PTE2PA(pte));
+            }
+        }
+
+        if ((pte & PTE_V) && (pte & (PTE_R | PTE_W | PTE_X)) == 0) {
+            uint64 child = PTE2PA(pte);
+            recur((pagetable_t) child, cur + 1);
+        }
+    }
+}
+
 void vmprint(pagetable_t pagetable, int cur) {
 //    printf("vmprint is calling...\n");
-//      printf("page table %p\n", pagetable);
-        if (cur == 0) {
-            printf("page table %p\n", pagetable);
-        }
-      if (cur > 3) return ;
-      for (int i = 1; i <= cur; i++) {
-          if (i != 1) printf(" ");
-          printf("..");
-      }
+//      printf("page table %p\n", pagetable
 
-      for (int i = 0; i < 512; i++) {
-          pte_t pte = pagetable[i];
-          if (pte & PTE_V) {
-              uint64  child = PTE2PA(pte);
-              printf("%d: pte %p pa [p]\n", i, child);
-              vmprint((pagetable_t)child, cur + 1);
-          }
-      }
-
+    printf("page table %p\n", pagetable);
+    recur(pagetable, cur);
 }
