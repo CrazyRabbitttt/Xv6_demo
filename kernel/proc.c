@@ -130,12 +130,12 @@ found:
   }
 
   // Allocate a usyscall page.
-    if((p -> usyspage = (struct usyscall *)kalloc()) == 0){              //使用kalloc分配一段页表，内存存储的是结构体
+    if((p -> usyscall = (struct usyscall *)kalloc()) == 0){              //使用kalloc分配一段页表，内存存储的是结构体
         freeproc(p);
         release(&p->lock);
         return 0;
     }
-    p -> usyspage -> pid = p -> pid;        //结构体内部的pid设置一下，然后将这块内存映射的USYSCALL
+    p -> usyscall -> pid = p -> pid;        //结构体内部的pid设置一下，然后将这块内存映射的USYSCALL
 
 
 
@@ -166,8 +166,8 @@ freeproc(struct proc *p)
     kfree((void*)p->trapframe);
   p->trapframe = 0;
 
-  if (p -> usyspage)
-      kfree((void*)p -> usyspage);
+  if (p -> usyscall)
+      kfree((void*)p -> usyscall);
   p -> usyspage = 0;
   if(p->pagetable)
     proc_freepagetable(p->pagetable, p->sz);
@@ -213,7 +213,7 @@ proc_pagetable(struct proc *p)
   }
 
   //map the pagetable to USYSCALL
-  if (mappages(pagetable, USYSCALL, PGSIZE, (uint64)(p -> usyspage), PTE_R | PTE_U) < 0) {
+  if (mappages(pagetable, USYSCALL, PGSIZE, (uint64)(p -> usyscall), PTE_R | PTE_U) < 0) {
       uvmunmap(pagetable, TRAMPOLINE, 1, 0);
       uvmunmap(pagetable, TRAPFRAME,  1, 0);            //如果分配的不成功的话就将前面分配的都要设置unmap，因为可能出错
       uvmfree(pagetable, 0);
