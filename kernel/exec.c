@@ -117,7 +117,6 @@ exec(char *path, char **argv)
   proc_freepagetable(oldpagetable, oldsz);
 
   if(p -> pid == 1) {
-      printf("page table %p\n", pagetable);
       vmprint(p -> pagetable, 0);            //Insert before argc
   }
 
