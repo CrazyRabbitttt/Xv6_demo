@@ -118,7 +118,7 @@ exec(char *path, char **argv)
 
   if(p -> pid == 1) {
       printf("page table %p\n", pagetable);
-      vmprint(p -> pagetable, 1);            //Insert before argc
+      vmprint(p -> pagetable, 0);            //Insert before argc
   }
 
   return argc; // this ends up in a0, the first argument to main(argc, argv)
