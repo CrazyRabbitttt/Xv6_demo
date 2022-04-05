@@ -434,7 +434,31 @@ copyinstr(pagetable_t pagetable, char *dst, uint64 srcva, uint64 max)
   }
 }
 
-void vmprint(pagetable_t pagetable,int cur) {
+if((pte & PTE_V) && (pte & (PTE_R|PTE_W|PTE_X)) == 0){
+// this PTE points to a lower-level page table.
+uint64 child = PTE2PA(pte);
+freewalk((pagetable_t)child);
+pagetable[i] = 0;
+} else if(pte & PTE_V){
+panic("freewalk: leaf");
+}
+
+void vmprint(pagetable_t pagetable, int cur) {
 //    printf("vmprint is calling...\n");
       printf("page table %p\n", pagetable);
+      if (cur > 3) return ;
+      for (int i = 0; i < cur; i++) {
+          if (i) cout << " ";
+          cout << "..";
+      }
+
+      for (int i = 0; i < 512; i++) {
+          pte_t pte = pagetable[i];
+          if (pte & PTE_V) {
+              uint64  child = PTE2PA(pte);
+              printf("%d: pte %p pa [p]\n", i, child);
+              vmprint((pagetable_t)child), cur + 1;
+          }
+      }
+
 }
