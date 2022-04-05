@@ -101,6 +101,8 @@ allocpid() {
 // If found, initialize state required to run in the kernel,
 // and return with p->lock held.
 // If there are no free procs, or a memory allocation fails, return 0.
+
+//先分配一块内存，下面的map函数进行映射
 static struct proc*
 allocproc(void)
 {
@@ -121,19 +123,19 @@ found:
   p->state = USED;
 
   // Allocate a trapframe page.
-  if((p->trapframe = (struct trapframe *)kalloc()) == 0){
+  if((p->trapframe = (struct trapframe *)kalloc()) == 0){               //从空闲链表中寻找到了空闲的区域给到结构体
     freeproc(p);
     release(&p->lock);
     return 0;
   }
 
   // Allocate a usyscall page.
-    if((p -> usyspage = (struct usyscall *)kalloc()) == 0){              //使用kalloc分配一段页表
+    if((p -> usyspage = (struct usyscall *)kalloc()) == 0){              //使用kalloc分配一段页表，内存存储的是结构体
         freeproc(p);
         release(&p->lock);
         return 0;
     }
-    p -> usyspage -> pid = p -> pid;
+    p -> usyspage -> pid = p -> pid;        //结构体内部的pid设置一下，然后将这块内存映射的USYSCALL
 
 
 
@@ -211,9 +213,9 @@ proc_pagetable(struct proc *p)
   }
 
   //map the pagetable to USYSCALL
-  if (mappages(pagetable, USYSCALL, PGSIZE, (uint64)(p -> trapframe), PTE_R | PTE_U) < 0) {
+  if (mappages(pagetable, USYSCALL, PGSIZE, (uint64)(p -> usyspage), PTE_R | PTE_U) < 0) {
       uvmunmap(pagetable, TRAMPOLINE, 1, 0);
-      uvmunmap(pagetable, TRAPFRAME,  1, 0);
+      uvmunmap(pagetable, TRAPFRAME,  1, 0);            //如果分配的不成功的话就将前面分配的都要设置unmap，因为可能出错
       uvmfree(pagetable, 0);
       return 0;
   }
