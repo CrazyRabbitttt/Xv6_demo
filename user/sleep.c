@@ -5,7 +5,7 @@
 int
 main(int argc, char *argv[]) {
     if (argc <= 1) {
-        fprintf(2, "usage: sleep seconds\n");
+        fprintf(2, "usage: sleep <number>\n");
         exit(1);
     }
     sleep(atoi(argv[1]));
