@@ -52,7 +52,7 @@ int main(int argc, char** argv) {
     printf("-------------\n");
 
     GotAndPass(curnumber, fd);
-
+    exit(0);
 }
 
 
