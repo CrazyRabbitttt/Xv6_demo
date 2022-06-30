@@ -30,7 +30,7 @@ void GotAndPass(int curnumber, int *fd) {
         close(fd[1]);
         GotAndPass(Next, fd);
     } else {            //父进程
-        printf("Now running parent...\n")
+        printf("Now running parent...\n");
         close(fd[0]);
         //进行传递
         printf("prime %d\n", curnumber);
