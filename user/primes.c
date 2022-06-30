@@ -49,6 +49,8 @@ int main(int argc, char** argv) {
         write(fd[1], &i, sizeof(int));
     }
 
+    printf("-------------\n");
+
     GotAndPass(curnumber, fd);
 
 }
