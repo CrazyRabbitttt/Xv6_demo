@@ -7,73 +7,52 @@
 #include "kernel/stat.h"
 #include "user/user.h"
 
-#define MAXNUM 35
+#define  MAXPrime 35
 
-#define FIRST_PRIME 2
+#define First 2
 
-int generate();
-
-int filter(int in_fd, int prime);
-
-int main()
-{
-    int prime;
-    int in = generate();
-    while (read(in, &prime, sizeof (int))) {
-        printf("prime %d\n", prime);
-        in = filter(in, prime);
-    }
-    exit(0);
-}
-
-int generate()
-{
-    int fd[2];
-
-    pipe(fd);
-    if (!fork()) {      //parent
-        for (int i = FIRST_PRIME; i <= MAXNUM; i++) {
-            write(fd[1], &i, sizeof (int));
+int GotAndPass(int curnumber, int *fd) {
+    //读取、关闭读取、写入、关闭写入
+    int pid = fork();
+    if (pid == 0) {
+        int n, Next = -1;
+        int num;
+        while((n = read(fd[0], &num, sizeof int)) > 0) {      //read from pipe
+            //传送的参数fd
+            if (Next == -1) {Next = num;}
+            write(fd[1], &num, sizeof int);
         }
+        //传送过去之后，只是将管道穿过去了
+        close(fd[0]);
         close(fd[1]);
-        exit(0);
-    }
-    //father will never got here
-    //here is the child to do
-    close(fd[1]);
-    return fd[0];
-
-}
-
-int
-filter(int in_fd, int prime)
-{
-    int value;
-    int fd[2];
-    pipe(fd);
-    if (!fork()) {
-        while (read(in_fd, &value, sizeof (int))) {
-            if (value % prime) {
-                write(fd[1], &value, sizeof (int));
+        GotAndPass(Next, fd);
+    } else {            //父进程
+        close(fd[0]);
+        //进行传递
+        printf("prime %d\n", curnumber);
+        for (int i = curnumber + 1; i <= MAXPrime; i++) {
+            if (i % curnumber) {
+                write(fd[1], &i, sizeof (int));
             }
         }
-        close(in_fd);
+        //close port
         close(fd[1]);
-
-
-        exit(0);
     }
-
-    //here also never have father process
-    close(in_fd);
-    close(fd[1]);
-    return fd[0];
-
 }
 
 
+int main(int argc, char** argv) {
+    int curnumber = First;
+    int fd[2];
+    int pid;
+    pipe(fd);       //create pipe
+    for (int i = First; i <= MAXPrime; i++) {           //Init
+        write(fd[1], &i, sizeof(int));
+    }
 
+    GotAndPass(curnumber, fd);
 
+}
 
 
 
