@@ -56,7 +56,7 @@ uint64
 sys_sleep(void)
 {
   int n;
-  uint ticks0;
+  uint ticks0;      //init the ticks
 
   if(argint(0, &n) < 0)
     return -1;
