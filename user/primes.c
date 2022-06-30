@@ -17,7 +17,7 @@ void GotAndPass(int curnumber, int *fd) {
     printf("Curnumber : %d\n", curnumber);
     int pid = fork();
     if (pid == 0) {
-        printf("Now running child...\n")
+        printf("Now running child...\n");
         int n, Next = -1;
         int num;
         while((n = read(fd[0], &num, sizeof (int))) > 0) {      //read from pipe
