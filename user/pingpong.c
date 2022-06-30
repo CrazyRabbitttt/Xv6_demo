@@ -27,7 +27,7 @@ int main(int argc, char** argv) {
         close(fd[1]);
 
         wait(0);            //wait for the child process terminted
-        int n = read(fd[0], buf, 4);
+         n = read(fd[0], buf, 4);
         printf("%d: received %s\n", getpid(), buf);
         exit(0);
     }
