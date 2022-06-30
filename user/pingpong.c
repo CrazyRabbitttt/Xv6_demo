@@ -11,30 +11,25 @@
 int main(int argc, char** argv) {
 
     //Parent send byte to child, child receive and send back
-    int fd[2];
-    char sendbuf[SENDSIZE];
-    char recvbuf[SENDSIZE];
-    pid_t pid;
-    sendbuf = "Ping";
-    if (pipe(fd) < 0) {
-        printf("create pipe error, quit\n");
-        exit(1);
-    }
-    if ((pid = fork()) < 0) {
-        printf("create process error, quit\n");
-        exit(1);
-    } else if (pid > 0) {       //Parent
-        write(fd[1], sendbuf, SENDSIZE);        //send message to pipe[1], and
+    int fd[2], pid;
+    char buf[SENDSIZE];
+    pipe(fd);
+    pid = fork();
+    if (pid == 0) {     //Child
+        int n = read(fd[0], buf, 4);
+        close(fd[0]);
+        printf("%d: received %s\n", getpid(), buf);
+        write(fd[1], "pong", 4);
+        close(fd[1]);
+        exit(0);
+    } else {
+        int n = write(fd[1], "ping", 4);
+        close(fd[1]);
 
-        sleep(1);
-        int n = read(fd[0], sendbuf, SENDSIZE);
-        printf("%d: received pong\n", getpid());
-    } else {                    //Child
-        int n = read(fd[0], recvbuf, SENDSIZE);
-        if (n) {
-            printf("%d: received ping\n", getpid());
-            write(fd[1], sendbuf, SENDSIZE);            //send back
-        }
+        wait(0);            //wait for the child process terminted
+        int n = read(fd[0], buf, 4);
+        printf("%d: received %s\n", getpid(), buf);
+        exit(0);
     }
 
 }
