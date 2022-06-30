@@ -13,8 +13,11 @@
 
 void GotAndPass(int curnumber, int *fd) {
     //读取、关闭读取、写入、关闭写入
+
+    printf("Curnumber : %d\n", curnumber);
     int pid = fork();
     if (pid == 0) {
+        printf("Now running child...\n")
         int n, Next = -1;
         int num;
         while((n = read(fd[0], &num, sizeof (int))) > 0) {      //read from pipe
@@ -27,6 +30,7 @@ void GotAndPass(int curnumber, int *fd) {
         close(fd[1]);
         GotAndPass(Next, fd);
     } else {            //父进程
+        printf("Now running parent...\n")
         close(fd[0]);
         //进行传递
         printf("prime %d\n", curnumber);
