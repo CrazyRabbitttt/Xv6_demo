@@ -11,52 +11,54 @@
 
 #define First 2
 
-void GotAndPass(int curnumber, int *fd) {
-    //读取、关闭读取、写入、关闭写入
 
-    printf("Curnumber : %d\n", curnumber);
-    int pid = fork();
-    if (pid == 0) {
-        printf("Now running child...\n");
-        int n, Next = -1;
-        int num;
-        while((n = read(fd[0], &num, sizeof (int))) > 0) {      //read from pipe
-            //传送的参数fd
-            if (Next == -1) {Next = num;}
-            write(fd[1], &num, sizeof (int));
-        }
-        //传送过去之后，只是将管道穿过去了
+void Primes(int read_fd) {
+    int First;
+    if (read(read_fd, &First, sizeof (int)) == 0) {
+        exit();
+    }
+    printf("prime %d\n", First);
+
+    //创建管道继续进行操作
+    int fd[2];
+    pipe(fd);
+    if (!fork()) {
         close(fd[0]);
-        close(fd[1]);
-        GotAndPass(Next, fd);
-    } else {            //父进程
-        printf("Now running parent...\n");
-        close(fd[0]);
-        //进行传递
-        printf("prime %d\n", curnumber);
-        for (int i = curnumber + 1; i <= MAXPrime; i++) {
-            if (i % curnumber) {
-                write(fd[1], &i, sizeof (int));
+        int value;
+        while (read(read_fd, &value, sizeof (int)) != 0) {
+            if (value % First) {
+                write(fd[1], &value, sizeof (int));
             }
         }
-        //close port
+
         close(fd[1]);
+    } else {
+        close(fd[1]);
+        Primes(fd[0]);
     }
+
+
 }
 
-
 int main(int argc, char** argv) {
-    int curnumber = First;
+    int curnumber = 1;
     int fd[2];
     pipe(fd);       //create pipe
-    for (int i = First; i <= MAXPrime; i++) {           //Init
-        write(fd[1], &i, sizeof(int));
+
+    if (!fork()) {
+        close(fd[0]);       //关闭读取的一端
+        for (int i = First; i <= MAXPrime; i++) {           //Init
+            write(fd[1], &i, sizeof(int));
+        }
+        close(fd[1]);
+    } else {
+        close(fd[1]);
+        Primes(fd[0]);
     }
 
-    printf("-------------\n");
+    wait();
+    exit();
 
-    GotAndPass(curnumber, fd);
-    exit(0);
 }
 
 
