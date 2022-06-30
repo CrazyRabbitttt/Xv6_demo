@@ -11,7 +11,7 @@
 
 #define First 2
 
-int GotAndPass(int curnumber, int *fd) {
+void GotAndPass(int curnumber, int *fd) {
     //读取、关闭读取、写入、关闭写入
     int pid = fork();
     if (pid == 0) {
