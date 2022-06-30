@@ -17,10 +17,10 @@ int GotAndPass(int curnumber, int *fd) {
     if (pid == 0) {
         int n, Next = -1;
         int num;
-        while((n = read(fd[0], &num, sizeof int)) > 0) {      //read from pipe
+        while((n = read(fd[0], &num, sizeof (int))) > 0) {      //read from pipe
             //传送的参数fd
             if (Next == -1) {Next = num;}
-            write(fd[1], &num, sizeof int);
+            write(fd[1], &num, sizeof (int));
         }
         //传送过去之后，只是将管道穿过去了
         close(fd[0]);
@@ -44,7 +44,6 @@ int GotAndPass(int curnumber, int *fd) {
 int main(int argc, char** argv) {
     int curnumber = First;
     int fd[2];
-    int pid;
     pipe(fd);       //create pipe
     for (int i = First; i <= MAXPrime; i++) {           //Init
         write(fd[1], &i, sizeof(int));
