@@ -17,6 +17,7 @@ void GotAndPass(int curnumber, int *fd) {
     printf("Curnumber : %d\n", curnumber);
     int pid = fork();
     if (pid == 0) {
+        wait(getppid());
         printf("Now running child...\n");
         int n, Next = -1;
         int num;
@@ -41,6 +42,7 @@ void GotAndPass(int curnumber, int *fd) {
         }
         //close port
         close(fd[1]);
+        exit(0);
     }
 }
 
