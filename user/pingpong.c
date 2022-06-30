@@ -16,18 +16,18 @@ int main(int argc, char** argv) {
     pipe(fd);
     pid = fork();
     if (pid == 0) {     //Child
-        int n = read(fd[0], buf, 4);
+        read(fd[0], buf, 4);
         close(fd[0]);
         printf("%d: received %s\n", getpid(), buf);
         write(fd[1], "pong", 4);
         close(fd[1]);
         exit(0);
     } else {
-        int n = write(fd[1], "ping", 4);
+        write(fd[1], "ping", 4);
         close(fd[1]);
 
         wait(0);            //wait for the child process terminted
-         n = read(fd[0], buf, 4);
+        read(fd[0], buf, 4);
         printf("%d: received %s\n", getpid(), buf);
         exit(0);
     }
