@@ -1,0 +1,18 @@
+Index: kernel/memlayout.h
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>// Physical memory layout\n\n// qemu -machine virt is set up like this,\n// based on qemu's hw/riscv/virt.c:\n//\n// 00001000 -- boot ROM, provided by qemu\n// 02000000 -- CLINT\n// 0C000000 -- PLIC\n// 10000000 -- uart0 \n// 10001000 -- virtio disk \n// 80000000 -- boot ROM jumps here in machine mode\n//             -kernel loads the kernel here\n// unused RAM after 80000000.\n\n// the kernel uses physical memory thus:\n// 80000000 -- entry.S, then kernel text and data\n// end -- start of kernel page allocation area\n// PHYSTOP -- end RAM used by the kernel\n\n// qemu puts UART registers here in physical memory.\n#define UART0 0x10000000L\n#define UART0_IRQ 10\n\n// virtio mmio interface\n#define VIRTIO0 0x10001000\n#define VIRTIO0_IRQ 1\n\n// local interrupt controller, which contains the timer.\n#define CLINT 0x2000000L\n#define CLINT_MTIMECMP(hartid) (CLINT + 0x4000 + 8*(hartid))\n#define CLINT_MTIME (CLINT + 0xBFF8) // cycles since boot.\n\n// qemu puts programmable interrupt controller here.\n#define PLIC 0x0c000000L\n#define PLIC_PRIORITY (PLIC + 0x0)\n#define PLIC_PENDING (PLIC + 0x1000)\n#define PLIC_MENABLE(hart) (PLIC + 0x2000 + (hart)*0x100)\n#define PLIC_SENABLE(hart) (PLIC + 0x2080 + (hart)*0x100)\n#define PLIC_MPRIORITY(hart) (PLIC + 0x200000 + (hart)*0x2000)\n#define PLIC_SPRIORITY(hart) (PLIC + 0x201000 + (hart)*0x2000)\n#define PLIC_MCLAIM(hart) (PLIC + 0x200004 + (hart)*0x2000)\n#define PLIC_SCLAIM(hart) (PLIC + 0x201004 + (hart)*0x2000)\n\n// the kernel expects there to be RAM\n// for use by the kernel and user pages\n// from physical address 0x80000000 to PHYSTOP.\n#define KERNBASE 0x80000000L\n#define PHYSTOP (KERNBASE + 128*1024*1024)\n\n// map the trampoline page to the highest address,\n// in both user and kernel space.\n#define TRAMPOLINE (MAXVA - PGSIZE)\n\n// map kernel stacks beneath the trampoline,\n// each surrounded by invalid guard pages.\n#define KSTACK(p) (TRAMPOLINE - ((p)+1)* 2*PGSIZE)\n\n// User memory layout.\n// Address zero first:\n//   text\n//   original data and bss\n//   fixed-size stack\n//   expandable heap\n//   ...\n//   TRAPFRAME (p->trapframe, used by the trampoline)\n//   TRAMPOLINE (the same page as in the kernel)\n#define TRAPFRAME (TRAMPOLINE - PGSIZE)\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/kernel/memlayout.h b/kernel/memlayout.h
+--- a/kernel/memlayout.h	(revision 2455162885c4218ec4b1311ceff30b9c97717404)
++++ b/kernel/memlayout.h	(date 1649143995319)
+@@ -65,3 +65,7 @@
+ //   TRAPFRAME (p->trapframe, used by the trampoline)
+ //   TRAMPOLINE (the same page as in the kernel)
+ #define TRAPFRAME (TRAMPOLINE - PGSIZE)
++
++struct usyscall {
++    int pid;
++};
