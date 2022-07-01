@@ -34,53 +34,50 @@ void cmp(char* a, char* b) {
 }
 
 void
-find(char* dirname, char* filename) {
-    //find dirname filename
-    //first : open file
-    int fd;
+find(char *path, char *target)
+{
     char buf[512], *p;
-    struct  dirent de;      //dir status
-    struct  stat st;        //dile stat
+    int fd;
+    struct dirent de;
+    struct stat st;
 
-    //open dir
-    if ((fd = open(dirname, 0)) < 0) {
-        fprintf(2, "find: can not open dir %s\n", dirname);
+    if((fd = open(path, 0)) < 0){	//根据路径打开文件
+        fprintf(2, "find: cannot open %s\n", path);
         return;
     }
 
-    // get the stat of the dir
-    if (fstat(fd, &st) < 0) {
-        fprintf(2, "find: cannot stat %s\n", dirname);
+    if(fstat(fd, &st) < 0){	//获取文件参数
+        fprintf(2, "find: cannot stat %s\n", path);
         close(fd);
         return;
     }
 
-
-    switch (st.type) {
-        case T_FILE:        //type is file
-            cmp(dirname, filename);
+    switch(st.type){
+        case T_FILE://该文件为文件时
+            cmp(path, target);
             break;
-        case T_DIR:
-            printf("The dir : %s\n", dirname);
-            if(strlen(dirname) + 1 + DIRSIZ + 1 > sizeof buf){
+
+        case T_DIR: //该文件为文件夹时
+            if(strlen(path) + 1 + DIRSIZ + 1 > sizeof buf){
                 printf("find: path too long\n");
                 break;
             }
-            strcpy(buf, dirname);
+            strcpy(buf, path);
             p = buf+strlen(buf);
             *p++ = '/';
             while(read(fd, &de, sizeof(de)) == sizeof(de)){
-                if(de.inum == 0 || de.inum == 1 || strcmp(dirname, ".") == 0 || !strcmp(dirname, "..") == 0)
+                //若文件夹下文件数量为0，1或者该文件夹名字为"."或".."则不进入，防止套娃
+                if(de.inum == 0 || de.inum == 1 || strcmp(de.name, ".")==0 || strcmp(de.name, "..")==0)
                     continue;
                 memmove(p, de.name, strlen(de.name));	//将文件名追加到路径，递归find
                 p[strlen(de.name)] = '\0';
-                find(buf, filename);
+                find(buf, target);
             }
             break;
     }
-
     close(fd);
 }
+
 
 
 int
