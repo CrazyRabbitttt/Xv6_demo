@@ -156,7 +156,6 @@ syscall(void)
         printf("%d: syscall %s -> %d\n", p->pid, syscall_name[num - 1], 400);
     }
 
-    printf("系统调用%s 被调用\n", syscall_name[num - 1]);
   } else {
     printf("%d %s: unknown sys call %d\n",
             p->pid, p->name, num);
