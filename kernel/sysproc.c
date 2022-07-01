@@ -101,7 +101,6 @@ uint64
 sys_trace(void)
 {
 
-    printf("Syscall trace say Hi!\n");
 
     //获取到mask, 如何将mask传递给syscall呢
 
@@ -110,7 +109,7 @@ sys_trace(void)
         return -1;
     struct proc *p = myproc();        //获得进程的状态
     p->mask = mask;
-    printf("Init the mask : %d\n", p->mask);
+//    printf("Init the mask : %d\n", p->mask);
     //sleep syscall, pass one argument to sleep
 //    int n;
 //    uint ticks0;
