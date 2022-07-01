@@ -11,6 +11,7 @@
 char*
 fmtname(char *path)
 {
+    static char buf[DIRSIZ+1];
     char *p;
 
     // Find first character after last slash.
@@ -18,65 +19,82 @@ fmtname(char *path)
         ;
     p++;
 
-    return p;
+    // Return blank-padded name.
+    if(strlen(p) >= DIRSIZ)
+        return p;
+    memmove(buf, p, strlen(p));
+    memset(buf+strlen(p), ' ', DIRSIZ-strlen(p));
+    return buf;
 }
 
-void find(char *path, char *target)
-{
-    char buf[505], *p;
+
+
+void
+find(char* dirname, char* filename) {
+    //find dirname filename
+    //first : open file
     int fd;
-    struct dirent de;
-    struct stat st;
+    char buf[512], *p;
+    struct  dirent de;      //dir status
+    struct  stat st;        //dile stat
 
-    if (!strcmp(fmtname(path), target)) {
-        printf("%s\n", path);
-        return ;
+    //open dir
+    if ((fd = open(dirname, 0)) < 0) {
+        fprintf(2, "find: can not open dir %s\n", dirname);
+        return;
     }
 
-    if ((fd = open(path, O_RDONLY)) < 0) {
-        fprintf(2, "find: can't open %s\n", path);
-        return ;
-    }
+    // get the stat of the dir
     if (fstat(fd, &st) < 0) {
-        fprintf(2, "find: can't stat %s", path);
+        fprintf(2, "find: cannot stat %s\n", dirname);
         close(fd);
-        return ;
+        return;
     }
 
+    //if not the dir
     if (st.type != T_DIR) {
-        close(fd);
-        return ;
+        printf("Error: The argument %s not a dir\n", argv[1]);
+        return;
     }
 
-    //DIR
+
+    //判断所有的文件fmt 是否是 equal with filename
     if(strlen(path) + 1 + DIRSIZ + 1 > sizeof buf){
-        printf("ls: path too long\n");
-        close(fd);
-        return ;
+        printf("find: path too long\n");
+        break;
     }
     strcpy(buf, path);
     p = buf+strlen(buf);
     *p++ = '/';
-    while(read(fd, &de, sizeof (de)) == sizeof (de)) {
-        if (de.inum == 0)
-            continue;
+    while(read(fd, &de, sizeof(de)) == sizeof(de)){         //read from dir
+        if(de.inum == 0)
+            find(de.name, filename);                        //concurrent
         memmove(p, de.name, DIRSIZ);
         p[DIRSIZ] = 0;
-
-        //path = oldpath + filename
-
-        if (!strcmp(de.name, ".") || !strcmp(de.name, ".."))
+        if(stat(buf, &st) < 0){
+            printf("find: cannot stat %s\n", buf);
             continue;
-        find(buf, target);
+        }
+        if (strcmp(fmtname(buf), filename) == 0) {
+            printf("%s %d %d %d\n", fmtname(buf), st.type, st.ino, st.size);
+        }
     }
+
     close(fd);
 }
 
-int main(int argc, char *argv[]) {
+
+int
+main(int argc, char *argv[])
+{
+    int i;
+    //find dirPath filepath
     if (argc < 3) {
-        fprintf(2, "usage: find <dirname> <filename>");
-        exit(1);
+        printf("Usage find DirPath filePath\n");
+        exit(0);
     }
+
     find(argv[1], argv[2]);
+
     exit(0);
 }

@@ -27,8 +27,8 @@ ls(char *path)
 {
   char buf[512], *p;
   int fd;
-  struct dirent de;
-  struct stat st;
+  struct dirent de;             //struct dirent
+  struct stat st;               //文件状态
 
   if((fd = open(path, 0)) < 0){
     fprintf(2, "ls: cannot open %s\n", path);
@@ -41,6 +41,7 @@ ls(char *path)
     return;
   }
 
+  //judge the type of the opened file
   switch(st.type){
   case T_FILE:
     printf("%s %d %d %l\n", fmtname(path), st.type, st.ino, st.size);
@@ -57,7 +58,7 @@ ls(char *path)
     while(read(fd, &de, sizeof(de)) == sizeof(de)){
       if(de.inum == 0)
         continue;
-      memmove(p, de.name, DIRSIZ);
+      memmove(p, de.name, DIRSIZ);              //copy name to the buf
       p[DIRSIZ] = 0;
       if(stat(buf, &st) < 0){
         printf("ls: cannot stat %s\n", buf);
@@ -70,16 +71,19 @@ ls(char *path)
   close(fd);
 }
 
+//find the file in concurrent way
+
+
 int
 main(int argc, char *argv[])
 {
   int i;
 
-  if(argc < 2){
+  if(argc < 2){             //if argument number less than 2, then ls(".")
     ls(".");
     exit(0);
   }
-  for(i=1; i<argc; i++)
+  for(i=1; i<argc; i++)     //Or ls all the dirs
     ls(argv[i]);
   exit(0);
 }
