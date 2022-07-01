@@ -108,9 +108,9 @@ sys_trace(void)
     int mask;
     if(argint(0, &mask) < 0)
         return -1;
-
-
-
+    struct  proc *p;
+    p->mask = mask;
+    printf("Init the mask\n");
     //sleep syscall, pass one argument to sleep
 //    int n;
 //    uint ticks0;
