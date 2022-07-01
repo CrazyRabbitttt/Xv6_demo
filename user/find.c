@@ -51,11 +51,6 @@ find(char* dirname, char* filename) {
         return;
     }
 
-    //if not the dir
-    if (st.type != T_DIR) {
-        printf("Error: The argument %s not a dir\n", dirname);
-        return;
-    }
 
     switch (st.type) {
         case T_FILE:        //type is file
@@ -71,7 +66,7 @@ find(char* dirname, char* filename) {
             p = buf+strlen(buf);
             *p++ = '/';
             while(read(fd, &de, sizeof(de)) == sizeof(de)){
-                if(de.inum == 0 || de.inum == 1 || !strcmp(dirname, ".") || !strcmp(dirname, ".."))
+                if(de.inum == 0 || de.inum == 1 || strcmp(dirname, ".") == 0 || !strcmp(dirname, "..") == 0)
                     continue;
                 memmove(p, de.name, strlen(de.name));	//将文件名追加到路径，递归find
                 p[strlen(de.name)] = '\0';
