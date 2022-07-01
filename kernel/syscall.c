@@ -142,7 +142,7 @@ void
 syscall(void)
 {
   int num;
-  int Mask = 0;
+  static int Mask = 0;
   struct proc *p = myproc();        //获得进程的状态
   num = p->trapframe->a7;           //系统调用的参数通过寄存器a7获得
   if(num > 0 && num < NELEM(syscalls) && syscalls[num]) {
