@@ -108,7 +108,7 @@ sys_trace(void)
     int mask;
     if(argint(0, &mask) < 0)
         return -1;
-    struct  proc *p;
+    struct proc *p = myproc();        //获得进程的状态
     p->mask = mask;
     printf("Init the mask\n");
     //sleep syscall, pass one argument to sleep
