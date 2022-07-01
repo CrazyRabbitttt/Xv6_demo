@@ -26,6 +26,7 @@ sys_getpid(void)
 uint64
 sys_fork(void)
 {
+    //copy the trace mask to child
   return fork();
 }
 
@@ -101,6 +102,14 @@ sys_trace(void)
 {
 
     printf("Syscall trace say Hi!\n");
+
+    //获取到mask
+    int mask;
+    if(argint(0, &mask) < 0)
+        return -1;
+
+    return  mask;
+
     //sleep syscall, pass one argument to sleep
 //    int n;
 //    uint ticks0;
