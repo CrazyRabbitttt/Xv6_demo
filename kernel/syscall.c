@@ -152,6 +152,7 @@ syscall(void)
     }
 
     //fork == 1
+      printf("The bit of mask : %d\n", Mask);
     if ((Mask >> num) & 0x1) {
         printf("%d: syscall %s -> %d\n", p->pid, syscall_name[num - 1], 400);
     }
