@@ -1,15 +1,10 @@
-//
-// Created by SGX on 2022/3/30.
-//
-
 #include "kernel/types.h"
 #include "kernel/stat.h"
 #include "user/user.h"
 #include "kernel/fs.h"
-#include "kernel/fcntl.h"
 
 char*
-fmtname(char *path)
+fmtname(char *path)	//	从字符串 "a/b/c/d" 中获取 字符串 "d",基本原理为从后往前找到第一个'/'
 {
     static char buf[DIRSIZ+1];
     char *p;
@@ -23,14 +18,15 @@ fmtname(char *path)
     if(strlen(p) >= DIRSIZ)
         return p;
     memmove(buf, p, strlen(p));
-    memset(buf+strlen(p), ' ', DIRSIZ-strlen(p));
+    buf[strlen(p)] = '\0';
+
     return buf;
 }
 
-void cmp(char* a, char* b) {
-    if (!strcmp(fmtname(a), b)) {
+void cmp(char *a, char *b)	//比较两个文件名是否相同并打印路径
+{
+    if(!strcmp(fmtname(a), b))
         printf("%s\n", a);
-    }
 }
 
 void
@@ -78,18 +74,17 @@ find(char *path, char *target)
     close(fd);
 }
 
-
-
 int
 main(int argc, char *argv[])
 {
-    //find dirPath filepath
-    if (argc < 3) {
-        printf("Usage find DirPath filePath\n");
+
+
+    if(argc < 3){
+        printf("Please input the right arg!\n");
         exit(0);
     }
 
     find(argv[1], argv[2]);
-
     exit(0);
 }
+
