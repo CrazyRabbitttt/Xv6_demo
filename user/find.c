@@ -63,7 +63,7 @@ find(char* dirname, char* filename) {
         printf("find: path too long\n");
         return;
     }
-    strcpy(buf, path);
+    strcpy(buf, dirname);
     p = buf+strlen(buf);
     *p++ = '/';
     while(read(fd, &de, sizeof(de)) == sizeof(de)){         //read from dir
