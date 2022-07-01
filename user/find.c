@@ -38,6 +38,7 @@ find(char* dirname, char* filename) {
     struct  dirent de;      //dir status
     struct  stat st;        //dile stat
 
+    printf("Find in %s : %s\n", dirname, filename);
     //open dir
     if ((fd = open(dirname, 0)) < 0) {
         fprintf(2, "find: can not open dir %s\n", dirname);
