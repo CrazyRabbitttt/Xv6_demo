@@ -103,12 +103,13 @@ sys_trace(void)
 
     printf("Syscall trace say Hi!\n");
 
-    //获取到mask
+    //获取到mask, 如何将mask传递给syscall呢
+
     int mask;
     if(argint(0, &mask) < 0)
         return -1;
 
-    return  mask;
+
 
     //sleep syscall, pass one argument to sleep
 //    int n;

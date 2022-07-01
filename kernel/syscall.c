@@ -142,11 +142,21 @@ void
 syscall(void)
 {
   int num;
+  int Mask = 0;
   struct proc *p = myproc();        //获得进程的状态
   num = p->trapframe->a7;           //系统调用的参数通过寄存器a7获得
   if(num > 0 && num < NELEM(syscalls) && syscalls[num]) {
     p->trapframe->a0 = syscalls[num]();     //调用function
-      printf("系统调用%s 被调用\n", syscall_name[num - 1]);
+    if (num == SYS_trace) {
+        Mask = p->mask;                         //获得到需要trace的mask
+    }
+
+    //fork == 1
+    if ((Mask >> num) & 0x1) {
+        printf("%d: syscall %s -> %d\n", p->pid, syscall_name[num - 1], 400);
+    }
+
+    printf("系统调用%s 被调用\n", syscall_name[num - 1]);
   } else {
     printf("%d %s: unknown sys call %d\n",
             p->pid, p->name, num);
