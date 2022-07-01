@@ -104,6 +104,7 @@ extern uint64 sys_unlink(void);
 extern uint64 sys_wait(void);
 extern uint64 sys_write(void);
 extern uint64 sys_uptime(void);
+extern uint64 sys_trace(void);              //通过此处的声明进行能够获得sys_trace
 
 static uint64 (*syscalls[])(void) = {
 [SYS_fork]    sys_fork,
@@ -127,15 +128,17 @@ static uint64 (*syscalls[])(void) = {
 [SYS_link]    sys_link,
 [SYS_mkdir]   sys_mkdir,
 [SYS_close]   sys_close,
+[SYS_trace]   sys_trace,
 };
 
 void
 syscall(void)
 {
   int num;
-  struct proc *p = myproc();
+  struct proc *p = myproc();        //获得进程的状态
 
-  num = p->trapframe->a7;
+  num = p->trapframe->a7;           //系统调用的参数通过寄存器a7获得
+    printf("Now run to the syscall.., the num is %d\n", num);
   if(num > 0 && num < NELEM(syscalls) && syscalls[num]) {
     p->trapframe->a0 = syscalls[num]();
   } else {
