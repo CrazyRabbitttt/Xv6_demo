@@ -153,7 +153,7 @@ syscall(void)
 
     //fork == 1
     if ((Mask >> num) & 0x1) {
-        printf("%d: syscall %s -> %d\n", p->pid, syscall_name[num - 1], 400);
+        printf("%d: syscall %s -> %d\n", p->pid, syscall_name[num - 1], p->trapframe->a0);
     }
 
   } else {
