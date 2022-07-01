@@ -147,9 +147,7 @@ syscall(void)
   if(num > 0 && num < NELEM(syscalls) && syscalls[num]) {
     p->trapframe->a0 = syscalls[num]();     //调用function
     int Mask = 0;
-    if (num == SYS_trace) {
-        Mask = p->mask;                         //获得到需要trace的mask
-    }
+    Mask = p->mask;
 
     //fork == 1
     if ((Mask >> num) & 0x1) {
