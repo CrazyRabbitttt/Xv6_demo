@@ -57,27 +57,27 @@ find(char* dirname, char* filename) {
         return;
     }
 
-
-    //判断所有的文件fmt 是否是 equal with filename
-    if(strlen(dirname) + 1 + DIRSIZ + 1 > sizeof buf){
-        printf("find: path too long\n");
-        return;
-    }
-    strcpy(buf, dirname);
-    p = buf+strlen(buf);
-    *p++ = '/';
-    while(read(fd, &de, sizeof(de)) == sizeof(de)){         //read from dir
-        if(de.inum == 0)
-            find(de.name, filename);                        //concurrent
-        memmove(p, de.name, DIRSIZ);
-        p[DIRSIZ] = 0;
-        if(stat(buf, &st) < 0){
-            printf("find: cannot stat %s\n", buf);
-            continue;
-        }
-        if (strcmp(fmtname(buf), filename) == 0) {
-            printf("%s %d %d %d\n", fmtname(buf), st.type, st.ino, st.size);
-        }
+    switch (st.type) {
+        case T_FILE:        //type is file
+            if (strcmp(filename, dirname) == 0)
+                printf("%s\n", dirname);
+            break;
+        case T_DIR:
+            if(strlen(dirname) + 1 + DIRSIZ + 1 > sizeof buf){
+                printf("find: path too long\n");
+                break;
+            }
+            strcpy(buf, path);
+            p = buf+strlen(buf);
+            *p++ = '/';
+            while(read(fd, &de, sizeof(de)) == sizeof(de)){
+                if(de.inum == 0 || de.inum == 1 || !strcmp(dirname, ".") || !strcmp(dirname, ".."))
+                    continue;
+                memmove(p, de.name, strlen(de.name));	//将文件名追加到路径，递归find
+                p[strlen(de.name)] = '\0';
+                find(buf, filename);
+            }
+            break;
     }
 
     close(fd);
