@@ -142,11 +142,11 @@ void
 syscall(void)
 {
   int num;
-  static int Mask = 0;
   struct proc *p = myproc();        //获得进程的状态
   num = p->trapframe->a7;           //系统调用的参数通过寄存器a7获得
   if(num > 0 && num < NELEM(syscalls) && syscalls[num]) {
     p->trapframe->a0 = syscalls[num]();     //调用function
+    int Mask = 0;
     if (num == SYS_trace) {
         Mask = p->mask;                         //获得到需要trace的mask
     }
