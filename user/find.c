@@ -53,15 +53,15 @@ find(char* dirname, char* filename) {
 
     //if not the dir
     if (st.type != T_DIR) {
-        printf("Error: The argument %s not a dir\n", argv[1]);
+        printf("Error: The argument %s not a dir\n", dirname);
         return;
     }
 
 
     //判断所有的文件fmt 是否是 equal with filename
-    if(strlen(path) + 1 + DIRSIZ + 1 > sizeof buf){
+    if(strlen(dirname) + 1 + DIRSIZ + 1 > sizeof buf){
         printf("find: path too long\n");
-        break;
+        return;
     }
     strcpy(buf, path);
     p = buf+strlen(buf);
@@ -87,7 +87,6 @@ find(char* dirname, char* filename) {
 int
 main(int argc, char *argv[])
 {
-    int i;
     //find dirPath filepath
     if (argc < 3) {
         printf("Usage find DirPath filePath\n");
