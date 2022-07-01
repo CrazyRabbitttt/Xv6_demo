@@ -27,7 +27,11 @@ fmtname(char *path)
     return buf;
 }
 
-
+void cmp(char* a, char* b) {
+    if (!strcmp(fmtname(a), b)) {
+        printf("%s\n", a);
+    }
+}
 
 void
 find(char* dirname, char* filename) {
@@ -38,7 +42,6 @@ find(char* dirname, char* filename) {
     struct  dirent de;      //dir status
     struct  stat st;        //dile stat
 
-    printf("Find in %s : %s\n", dirname, filename);
     //open dir
     if ((fd = open(dirname, 0)) < 0) {
         fprintf(2, "find: can not open dir %s\n", dirname);
@@ -55,10 +58,10 @@ find(char* dirname, char* filename) {
 
     switch (st.type) {
         case T_FILE:        //type is file
-            if (strcmp(filename, dirname) == 0)
-                printf("%s\n", dirname);
+            cmp(dirname, filename);
             break;
         case T_DIR:
+            printf("The dir : %s\n", dirname);
             if(strlen(dirname) + 1 + DIRSIZ + 1 > sizeof buf){
                 printf("find: path too long\n");
                 break;
