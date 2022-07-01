@@ -138,7 +138,6 @@ syscall(void)
   struct proc *p = myproc();        //获得进程的状态
 
   num = p->trapframe->a7;           //系统调用的参数通过寄存器a7获得
-    printf("Now run to the syscall.., the num is %d\n", num);
   if(num > 0 && num < NELEM(syscalls) && syscalls[num]) {
     p->trapframe->a0 = syscalls[num]();
   } else {
