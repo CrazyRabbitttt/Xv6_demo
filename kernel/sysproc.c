@@ -130,3 +130,7 @@ sys_trace(void)
 }
 
 
+uint64
+sys_sysinfo(void) {
+    printf("In function: sysinfo()\n");
+}
